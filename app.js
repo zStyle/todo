@@ -9,6 +9,10 @@ var engine = require( 'ejs-locals' );
 
 var app = express();
 
+// model setup
+mongoose.connect('mongodb://localhost/todo');
+var Todo = mongoose.model('Todo', { title: String, created_at, Date });
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', engine);
