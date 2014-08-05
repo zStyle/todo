@@ -10,8 +10,16 @@ var engine = require( 'ejs-locals' );
 var app = express();
 
 // model setup
+var db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function() {
+  var todoSchema = new mongoose.Schema({
+    title: String,
+    created_at: Date
+  });
+  var Todo = mongoose.model('Todo', todoSchema);
+});
 mongoose.connect('mongodb://localhost/todo');
-var Todo = mongoose.model('Todo', { title: String, created_at, Date });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +37,6 @@ app.get('/', function (req, res) {
   res.render('index', { title : 'Todos' });
 })
 app.get('/users', function (req, res) {
-
 });
 
 /// catch 404 and forward to error handler
