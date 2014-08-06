@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title><%=title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <% todos.forEach(function (todo){ %>
-      <%= todo.title %>
-    <% }); %>
+    <h1><%=title %></h1>
+    <table>
+      <tr>
+        <th> ID </th>
+        <th> Title </th>
+        <th> Updated </th>
+      </tr>
+      <% todos.forEach(function(todo) { %> 
+        <tr>
+          <td><%=todo._id %></td>
+          <td><%=todo.title %></td>
+          <td><%=todo.created_at %></td>
+        </tr>
+      <% }); %>
+    </table>
   </body>
 </html>
