@@ -13,11 +13,11 @@ var app = express();
 var db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', function() {
-  var todoSchema = new mongoose.Schema({
+  todoSchema = new mongoose.Schema({
     title: String,
     created_at: Date
   });
-  var Todo = mongoose.model('Todo', todoSchema);
+  Todo = mongoose.model('Todo', todoSchema);
 });
 mongoose.connect('mongodb://localhost/todo');
 
@@ -36,7 +36,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function (req, res) {
   res.render('index', { title : 'Todos' });
 })
-app.get('/users', function (req, res) {
+
+app.post('/todos', function (req, res) {
+  var object = req.body;
+  var date = new Date();
+  var todo = new Todo({
+    title: object.title,
+    created_at: date,
+  });
+  todo.save(function (err, the_todo) {
+    if (err){ res.send(400, err); }
+    else {
+      console.dir(the_todo);
+      res.send(201, the_todo);
+    }
+  });
+});
+
+app.put('/todos/:id', function (req, res) {
+  var object = req.body;
+  var date = new Date();
+  var todo = new Todo({
+    title: object.title,
+    created_at: date,
+  });
+  var id = req.params.id;
+  var query = { _id: id}; 
+
+  //todo.update(query, todo, {}, 
+});
+app.get('/todos', function (req, res) {
+  Todo.find(function(err, the_todos) {
+    if (err) return console.error(err);
+    res.render('data', { title : "Todo list", todos : the_todos });
+  });
 });
 
 /// catch 404 and forward to error handler
