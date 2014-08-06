@@ -45,11 +45,11 @@ app.post('/todos', function (req, res) {
     title: object.title,
     created_at: date,
   });
-  todo.save(function (err, doc) {
+  todo.save(function (err, docs) {
     if (err){ res.send(400, err); }
     else {
-      console.dir(doc);
-      res.send(201, doc);
+      console.dir(docs);
+      res.send(201, docs);
     }
   });
 });
@@ -64,19 +64,29 @@ app.put('/todos/:id', function (req, res) {
   var id = req.params.id;
   console.log(id);
 
-  Todo.findByIdAndUpdate(id, todo, {upsert:false}, function (err, doc) {
+  Todo.findByIdAndUpdate(id, todo, {upsert:false}, function (err, docs) {
     if (err){ res.send(400, err); }
     else {
-      console.dir(doc);
-      res.send(201, doc);
+      console.dir(docs);
+      res.send(201, docs);
     }    
   })
 });
+
 app.get('/todos', function (req, res) {
   Todo.find(function(err, the_todos) {
     if (err) return console.error(err);
     res.render('data', { title : "Todo list", todos : the_todos });
     console.dir(the_todos);
+  });
+});
+
+app.delete('/todos/:id', function(req, res) {
+  console.log("DELETE YEAH");
+  var id = req.params.id;
+  Todo.findByIdAndRemove(id, function(err, docs){
+    if (err) return console.error(err);
+    res.send(204, docs);
   });
 });
 
