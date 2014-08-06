@@ -20,6 +20,7 @@ db.once('open', function() {
   Todo = mongoose.model('Todo', todoSchema);
 });
 mongoose.connect('mongodb://localhost/todo');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -44,11 +45,11 @@ app.post('/todos', function (req, res) {
     title: object.title,
     created_at: date,
   });
-  todo.save(function (err, the_todo) {
+  todo.save(function (err, doc) {
     if (err){ res.send(400, err); }
     else {
-      console.dir(the_todo);
-      res.send(201, the_todo);
+      console.dir(doc);
+      res.send(201, doc);
     }
   });
 });
@@ -56,19 +57,26 @@ app.post('/todos', function (req, res) {
 app.put('/todos/:id', function (req, res) {
   var object = req.body;
   var date = new Date();
-  var todo = new Todo({
+  var todo = {
     title: object.title,
-    created_at: date,
-  });
+    created_at: date
+  }
   var id = req.params.id;
-  var query = { _id: id}; 
+  console.log(id);
 
-  //todo.update(query, todo, {}, 
+  Todo.findByIdAndUpdate(id, todo, {upsert:false}, function (err, doc) {
+    if (err){ res.send(400, err); }
+    else {
+      console.dir(doc);
+      res.send(201, doc);
+    }    
+  })
 });
 app.get('/todos', function (req, res) {
   Todo.find(function(err, the_todos) {
     if (err) return console.error(err);
     res.render('data', { title : "Todo list", todos : the_todos });
+    console.dir(the_todos);
   });
 });
 
