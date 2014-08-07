@@ -15,7 +15,8 @@ db.on('error', console.error);
 db.once('open', function() {
   todoSchema = new mongoose.Schema({
     title: String,
-    created_at: Date
+    created_at: Date,
+    category: String
   });
   Todo = mongoose.model('Todo', todoSchema);
 });
@@ -44,6 +45,7 @@ app.post('/todos', function (req, res) {
   var todo = new Todo({
     title: object.title,
     created_at: date,
+    category: object.category
   });
   todo.save(function (err, docs) {
     if (err){ res.send(400, err); }
@@ -59,7 +61,8 @@ app.put('/todos/:id', function (req, res) {
   var date = new Date();
   var todo = {
     title: object.title,
-    created_at: date
+    created_at: date,
+    category: object.category
   }
   var id = req.params.id;
   console.log(id);
@@ -87,6 +90,15 @@ app.delete('/todos/:id', function(req, res) {
   Todo.findByIdAndRemove(id, function(err, docs){
     if (err) return console.error(err);
     res.send(204, docs);
+  });
+});
+
+//category
+app.get('/todos/category/:category', function (req, res) {
+  Todo.find({category: req.params.category}, function(err, the_todos) {
+    if (err) return console.error(err);
+    res.render('data', { title : "Todo list", todos : the_todos });
+    console.dir(the_todos);
   });
 });
 
